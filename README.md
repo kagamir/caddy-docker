@@ -8,7 +8,7 @@
 - 推送 `v*` 标签：发布同名标签和 SHA 标签，不覆盖 `latest`。
 - Actions → Build and publish Caddy → Run workflow：手动构建。
 - PR：执行双架构构建及插件检查，不上传镜像。
-- 支持 `linux/amd64`、`linux/arm64`。
+- 支持 `linux/amd64`、`linux/arm64`，使用原生交叉编译，在最终镜像中验证插件。
 - 使用内置 `GITHUB_TOKEN`，无需配置 PAT 或 Cloudflare 密钥到 CI。
 
 默认跟随 Caddy 2 的官方 builder/alpine 镜像，插件使用 `latest`；每次构建刷新基础镜像并禁用层缓存。上游升级后需手动运行工作流或推送代码，不会自动监听上游更新。此策略不保证历史构建可复现。生产环境可将 Dockerfile 的版本参数固定为精确版本/插件提交，并按镜像 digest 部署。
