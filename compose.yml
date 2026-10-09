@@ -1,0 +1,19 @@
+services:
+  caddy:
+    image: ghcr.io/kagamir/caddy-docker:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      CF_API_TOKEN: ${CF_API_TOKEN:?Set CF_API_TOKEN in .env}
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,6 @@
+{$DOMAIN} {
+    tls {
+        dns cloudflare {env.CF_API_TOKEN}
+    }
+    respond "Caddy with Cloudflare DNS and Layer4 is running."
+}
