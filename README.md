@@ -1,6 +1,6 @@
 # Caddy Docker
 
-包含 Cloudflare DNS 和 Layer4 插件的 Caddy 镜像，由 GitHub Actions 构建并发布到 GHCR。
+包含 Cloudflare DNS、Layer4 和 Forward Proxy 插件的 Caddy 镜像，由 GitHub Actions 构建并发布到 GHCR。
 
 ## 构建与发布
 
@@ -29,7 +29,7 @@ docker compose logs -f caddy
 
 Cloudflare Token 仅在运行时注入。授予目标 Zone 的 `Zone:Read` 和 `DNS:Edit` 权限，不要提交 `.env`。
 
-`Caddyfile` 提供 DNS-01 自动签证的 HTTPS 示例。Layer4 已编译进入镜像，但未启用具体 TCP/UDP 路由；按需添加配置和对应端口映射。此镜像不会自动成为正向代理。
+`Caddyfile` 提供 DNS-01 自动签证的 HTTPS 示例。Layer4 和 Forward Proxy 已编译进入镜像；按需添加 Layer4 的 TCP/UDP 路由及端口映射，或通过 `forward_proxy` 指令启用正向代理。默认 `Caddyfile` 仅提供 HTTPS 响应，不启用正向代理。
 
 ## 检查插件
 
@@ -37,7 +37,7 @@ Cloudflare Token 仅在运行时注入。授予目标 Zone 的 `Zone:Read` 和 `
 docker run --rm ghcr.io/kagamir/caddy-docker:latest caddy list-modules
 ```
 
-输出应包含 `dns.providers.cloudflare`、`layer4`。Docker 构建中也会验证这两个模块；缺失时构建失败。
+输出应包含 `dns.providers.cloudflare`、`layer4`、`http.handlers.forward_proxy`。Docker 构建中会在两个架构的最终镜像中验证这三个模块；任一缺失时构建失败。
 
 ## 本地构建
 
@@ -49,4 +49,5 @@ docker build --pull -t caddy-custom .
 - https://github.com/caddyserver/caddy-docker
 - https://github.com/caddy-dns/cloudflare
 - https://github.com/mholt/caddy-l4
+- https://github.com/caddyserver/forwardproxy
 - https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images
