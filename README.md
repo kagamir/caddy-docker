@@ -1,6 +1,6 @@
 # Caddy Docker
 
-包含 Cloudflare DNS、Layer4 和 Forward Proxy 插件的 Caddy 镜像，由 GitHub Actions 构建并发布到 GHCR。
+包含 Cloudflare DNS、Layer4、Forward Proxy 和 Transform Encoder 插件的 Caddy 镜像，由 GitHub Actions 构建并发布到 GHCR。
 
 ## 构建与发布
 
@@ -37,7 +37,18 @@ Cloudflare Token 仅在运行时注入。授予目标 Zone 的 `Zone:Read` 和 `
 docker run --rm ghcr.io/kagamir/caddy-docker:latest caddy list-modules
 ```
 
-输出应包含 `dns.providers.cloudflare`、`layer4`、`http.handlers.forward_proxy`。Docker 构建中会在两个架构的最终镜像中验证这三个模块；任一缺失时构建失败。
+输出应包含 `dns.providers.cloudflare`、`layer4`、`http.handlers.forward_proxy`、`caddy.logging.encoders.transform`。Docker 构建中会在两个架构的最终镜像中验证这四个模块；任一缺失时构建失败。
+
+## 自定义访问日志格式
+
+Transform Encoder 支持通过 `format transform` 自定义日志格式。例如在站点的 `log` 块内输出域名、路径、状态码和来源 IP：
+
+```caddyfile
+log {
+    output stdout
+    format transform "{request>host} {request>uri} {status} {request>remote_ip}"
+}
+```
 
 ## 本地构建
 
@@ -50,4 +61,5 @@ docker build --pull -t caddy-custom .
 - https://github.com/caddy-dns/cloudflare
 - https://github.com/mholt/caddy-l4
 - https://github.com/caddyserver/forwardproxy
+- https://github.com/caddyserver/transform-encoder
 - https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images
